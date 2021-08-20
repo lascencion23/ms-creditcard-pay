@@ -4,6 +4,7 @@ import com.spring.mspaycredit.entity.Credit;
 import com.spring.mspaycredit.entity.CreditTransaction;
 import com.spring.mspaycredit.repository.CreditTransactionRepository;
 import com.spring.mspaycredit.service.CreditTransactionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
@@ -19,7 +20,7 @@ public class CreditTransactionServiceImpl implements CreditTransactionService {
 	private final WebClient webClient;
 	private final ReactiveCircuitBreaker reactiveCircuitBreaker;
 	
-	String uri = "http://localhost:8090/api/ms-credit-charge/creditCharge/find/{id}";
+	String uri = "http://localhost:8090/api/ms-credit-charge/creditCharge";
 	
 	public CreditTransactionServiceImpl(ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory) {
 		this.webClient = WebClient.builder().baseUrl(this.uri).build();
@@ -32,7 +33,7 @@ public class CreditTransactionServiceImpl implements CreditTransactionService {
     // Plan A
     @Override
     public Mono<Credit> findCredit(String id) {
-		return reactiveCircuitBreaker.run(webClient.get().uri(this.uri,id).accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(Credit.class),
+		return reactiveCircuitBreaker.run(webClient.get().uri(this.uri + "/find/{id}",id).accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(Credit.class),
 				throwable -> {
 					return this.getDefaultCreditCard();
 				});
@@ -40,10 +41,18 @@ public class CreditTransactionServiceImpl implements CreditTransactionService {
     
     // Plan B
   	public Mono<Credit> getDefaultCreditCard() {
-  		Mono<Credit> credit = Mono.just(new Credit("0", null, null,null));
+  		Mono<Credit> credit = Mono.just(new Credit("0", null, null,null,null, null));
   		return credit;
   	}
-    
+  	
+  	@Override
+  	public Mono<Credit> updateCredit(Credit credit){
+		return reactiveCircuitBreaker.run(webClient.put().uri(this.uri + "/update", credit.getId()).accept(MediaType.APPLICATION_JSON).syncBody(credit).retrieve().bodyToMono(Credit.class),
+				throwable -> {
+					return this.getDefaultCreditCard();
+				});
+  	};
+  	
     @Override
     public Mono<CreditTransaction> create(CreditTransaction t) {
         return creditTransactionRepository.save(t);

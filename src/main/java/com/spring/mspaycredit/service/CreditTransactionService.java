@@ -19,4 +19,6 @@ public interface CreditTransactionService {
     Flux<CreditTransaction> findCreditsPaid(String id);
 
     Mono<Credit> findCredit(String id);
+    
+    Mono<Credit> updateCredit(Credit credit);
 }

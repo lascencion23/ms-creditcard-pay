@@ -12,6 +12,8 @@ public class CreditCard {
 
     private String cardNumber;
 
+    private String accountNumber;
+    
     private Customer customer;
 
     private Double limitCredit;
