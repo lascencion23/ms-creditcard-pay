@@ -19,7 +19,7 @@ public class CreditTransactionServiceImpl implements CreditTransactionService {
 	private final WebClient webClient;
 	private final ReactiveCircuitBreaker reactiveCircuitBreaker;
 	
-	String uri = "http://localhost:8090/api/ms-credit-charge/creditCharge/find/{id}";
+	String uri = "http://gateway:8090/api/ms-credit-charge/creditCharge/find/{id}";
 	
 	public CreditTransactionServiceImpl(ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory) {
 		this.webClient = WebClient.builder().baseUrl(this.uri).build();
