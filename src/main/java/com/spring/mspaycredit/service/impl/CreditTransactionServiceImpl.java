@@ -85,4 +85,14 @@ public class CreditTransactionServiceImpl implements CreditTransactionService {
         return creditTransactionRepository.findByCreditId(id);
     }
 
+	@Override
+	public Flux<CreditTransaction> findByIdCustomer(String id) {
+		return creditTransactionRepository.findByCreditCreditCardCustomerId(id);
+	}
+
+	@Override
+	public Flux<CreditTransaction> findByIdCreditCard(String id) {
+		return creditTransactionRepository.findByCreditCreditCardId(id);
+	}
+
 }

@@ -29,6 +29,16 @@ public class CreditTransactionController {
 		return creditTransactionService.findById(id);
 	}
 
+	@GetMapping("/findByIdCustomer/{id}")
+	public Flux<CreditTransaction> findByIdCustomer(@PathVariable String id){
+		return creditTransactionService.findByIdCustomer(id);
+	}
+	
+	@GetMapping("/findByIdCreditCard/{id}")
+	public Flux<CreditTransaction> findByIdCreditCard(@PathVariable String id){
+		return creditTransactionService.findByIdCreditCard(id);
+	}
+	
 	@PostMapping("/create")
     public Mono<ResponseEntity<CreditTransaction>> create(@RequestBody CreditTransaction creditTransaction){
         // BUSCO EL CREDITO QUE SE PRETENDE HACER EL PAGO
